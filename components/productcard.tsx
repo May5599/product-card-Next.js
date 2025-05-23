@@ -1,28 +1,14 @@
 "use client";
 
+import { Product } from "../types/Product";
 import Image from "next/image";
 import { FC, useState } from "react";
 import { Star } from "lucide-react";
 
-interface ProductCardProps {
-  product: {
-    id: number;
-    title: string;
-    image: string;
-    price: number;
-    category: string;
-    rating: {
-      rate: number;
-      count: number;
-    };
-  };
-}
-
-const ProductCard: FC<{ product: ProductCardProps["product"] }> = ({ product }) => {
+const ProductCard: FC<{ product: Product }> = ({ product }) => {
   const [showToast, setShowToast] = useState(false);
 
   const handleAddToCart = () => {
-    // Add to cart logic
     setShowToast(true);
     setTimeout(() => setShowToast(false), 2000);
   };
