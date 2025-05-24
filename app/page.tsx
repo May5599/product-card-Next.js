@@ -1,17 +1,45 @@
-// app/page.tsx
+"use client";
+
+import { useEffect, useState } from "react";
 import ProductCard from "@/components/productcard";
+import IntroScreen from "@/components/IntroScreen";
 import { Product } from "@/types/Product";
 
+export default function HomePage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showIntro, setShowIntro] = useState(true);
 
-async function getProducts(): Promise<Product[]> {
-  const res = await fetch("https://fakestoreapi.com/products", {
-    cache: "no-store",
-  });
-  return res.json();
-}
+  useEffect(() => {
+    // Fetch products on mount
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("https://fakestoreapi.com/products");
+        const data = await res.json();
+        setProducts(data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching products", err);
+        setLoading(false);
+      }
+    };
 
-export default async function HomePage() {
-  const products = await getProducts();
+    fetchProducts();
+
+    // Show intro for 3 seconds
+    const introTimer = setTimeout(() => setShowIntro(false), 3000);
+    return () => clearTimeout(introTimer);
+  }, []);
+
+  if (showIntro) return <IntroScreen />;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-500 text-xl">
+        Loading products...
+      </div>
+    );
+  }
 
   return (
     <main className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
